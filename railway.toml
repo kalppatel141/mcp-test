@@ -1,0 +1,12 @@
+# Railway deployment configuration for MongoDB MCP Server
+# Docs: https://docs.railway.app/reference/config-as-code
+
+[build]
+# Railway auto-detects Dockerfile — no extra config needed here
+
+[deploy]
+# Railway sets PORT automatically; healthcheck confirms MCP is alive
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
