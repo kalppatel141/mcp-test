@@ -1,28 +1,21 @@
 # ─────────────────────────────────────────────────────────────
 # Official MongoDB MCP Server — Railway Deployment
-# Transport: Streamable HTTP (built-in, no wrapper needed)
+# Fixes "Invalid command line argument '-c'" error
 # ─────────────────────────────────────────────────────────────
 FROM mongodb/mongodb-mcp-server:latest
 
-# Railway injects PORT automatically. The MCP server reads
-# MDB_MCP_HTTP_PORT from env. We map both so it works locally
-# (port 3000) and on Railway (whatever PORT Railway assigns).
-ENV MDB_MCP_HTTP_HOST=0.0.0.0
+USER root
 
-# Required — set this in Railway's Variables tab, NOT here.
-# ENV MDB_MCP_CONNECTION_STRING=<set in Railway>
+# Write a startup script — avoids passing "sh -c" as MCP args
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
-# Optional but recommended for safety
 ENV MDB_MCP_READ_ONLY=false
 ENV MDB_MCP_TELEMETRY=disabled
+# MDB_MCP_CONNECTION_STRING must be set in Railway Variables tab
 
 EXPOSE 3000
 
-# The official image entrypoint already starts the MCP binary.
-# We override CMD to pass --transport http and let Railway's PORT
-# env var control the port.
-CMD ["sh", "-c", \
-  "node /app/dist/index.js \
-   --transport http \
-   --httpPort ${PORT:-3000} \
-   --httpHost 0.0.0.0"]
+# Clear the original entrypoint (which is the node MCP binary)
+# and use our shell wrapper instead
+ENTRYPOINT ["/bin/sh", "/start.sh"]
