@@ -6,7 +6,7 @@
 FROM mongodb/mongodb-mcp-server:latest
 
 # MDB_MCP_CONNECTION_STRING → set this in Railway Variables tab
-ENV MDB_MCP_READ_ONLY=false
+ENV MDB_MCP_READ_ONLY=true
 ENV MDB_MCP_TELEMETRY=disabled
 ENV MDB_MCP_LOGGERS=stderr,mcp
 
