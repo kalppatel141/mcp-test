@@ -1,21 +1,19 @@
 # ─────────────────────────────────────────────────────────────
 # Official MongoDB MCP Server — Railway Deployment
-# Fixes "Invalid command line argument '-c'" error
+# ENTRYPOINT is "mongodb-mcp-server" (global npm binary)
+# We pass args directly — no shell wrapper needed
 # ─────────────────────────────────────────────────────────────
 FROM mongodb/mongodb-mcp-server:latest
 
-USER root
-
-# Write a startup script — avoids passing "sh -c" as MCP args
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-
+# MDB_MCP_CONNECTION_STRING → set this in Railway Variables tab
 ENV MDB_MCP_READ_ONLY=false
 ENV MDB_MCP_TELEMETRY=disabled
-# MDB_MCP_CONNECTION_STRING must be set in Railway Variables tab
+ENV MDB_MCP_LOGGERS=stderr,mcp
 
 EXPOSE 3000
 
-# Clear the original entrypoint (which is the node MCP binary)
-# and use our shell wrapper instead
-ENTRYPOINT ["/bin/sh", "/start.sh"]
+# Pass --transport http args directly to the mongodb-mcp-server binary.
+# Railway sets PORT automatically; we use a shell to expand the variable.
+# We override ENTRYPOINT to use sh so we can expand ${PORT:-3000}.
+ENTRYPOINT ["/bin/sh", "-c"]
+CMD ["mongodb-mcp-server --transport http --httpPort ${PORT:-3000} --httpHost 0.0.0.0"]
