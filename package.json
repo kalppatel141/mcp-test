@@ -1,0 +1,26 @@
+{
+  "name": "mcpp",
+  "version": "1.0.0",
+  "description": "Deploy the **official MongoDB MCP Server** on Railway with **Auth0 authentication** and connect it to **claude.ai** as a custom connector.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalppatel141/mcp-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kalppatel141/mcp-test/issues"
+  },
+  "homepage": "https://github.com/kalppatel141/mcp-test#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "express-oauth2-jwt-bearer": "^1.9.0",
+    "http-proxy-middleware": "^4.0.0"
+  }
+}
