@@ -7,7 +7,7 @@
 const { auth } = require('express-oauth2-jwt-bearer');
 
 // Required env vars — fail fast if missing
-const AUTH0_DOMAIN   = process.env.AUTH0_DOMAIN;
+const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
 const AUTH0_AUDIENCE = process.env.AUTH0_AUDIENCE;
 
 if (!AUTH0_DOMAIN || !AUTH0_AUDIENCE) {
@@ -15,6 +15,11 @@ if (!AUTH0_DOMAIN || !AUTH0_AUDIENCE) {
   process.exit(1);
 }
 
+// Handle trailing slash variations automatically so we don't get mismatch errors
+const audiences = [
+  AUTH0_AUDIENCE,
+  AUTH0_AUDIENCE.endsWith('/') ? AUTH0_AUDIENCE.slice(0, -1) : `${AUTH0_AUDIENCE}/`
+];
 /**
  * Express middleware that validates the Authorization: Bearer <token> header.
  * - Fetches JWKS from Auth0 automatically
@@ -24,7 +29,7 @@ if (!AUTH0_DOMAIN || !AUTH0_AUDIENCE) {
  */
 const checkJwt = auth({
   issuerBaseURL: `https://${AUTH0_DOMAIN}/`,
-  audience: AUTH0_AUDIENCE,
+  audience: audiences,
 });
 
 /**
