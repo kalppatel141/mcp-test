@@ -15,12 +15,6 @@ if (!AUTH0_DOMAIN || !AUTH0_AUDIENCE) {
   process.exit(1);
 }
 
-// Handle trailing slash variations automatically so we don't get mismatch errors
-const audiences = [
-  AUTH0_AUDIENCE,
-  AUTH0_AUDIENCE.endsWith('/') ? AUTH0_AUDIENCE.slice(0, -1) : `${AUTH0_AUDIENCE}/`
-];
-
 /**
  * Express middleware that validates the Authorization: Bearer <token> header.
  * - Fetches JWKS from Auth0 automatically
@@ -30,7 +24,7 @@ const audiences = [
  */
 const checkJwt = auth({
   issuerBaseURL: `https://${AUTH0_DOMAIN}/`,
-  audience: audiences,
+  audience: AUTH0_AUDIENCE,
 });
 
 /**
